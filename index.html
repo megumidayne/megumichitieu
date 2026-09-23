@@ -1,1397 +1,1330 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Megumi Chi Tiêu</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-:root{
-    --pink:#ff70a3;
-    --pink2:#ff9abb;
-    --purple:#8064d9;
-    --green:#16a36a;
-    --red:#ef5575;
-    --bg:#f7f7fb;
-    --text:#292936;
-    --muted:#888;
-    --white:#fff;
-    --border:#eeeeF3;
-}
-
+*{box-sizing:border-box}
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    min-height:100vh;
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f6fa;
+  color:#222;
 }
-
-/* HEADER */
-
-header{
-    background:linear-gradient(135deg,var(--pink),var(--pink2));
-    color:white;
-    padding:28px 16px;
-    text-align:center;
-}
-
-header h1{
-    font-size:30px;
-    margin-bottom:7px;
-}
-
-header p{
-    opacity:.9;
-}
-
-/* CONTAINER */
-
-.container{
-    width:min(1000px,100%);
-    margin:25px auto;
-    padding:0 15px;
-}
-
-/* CARD */
-
+body.dark{background:#15171c;color:#eee}
+.container{max-width:1100px;margin:auto;padding:20px}
 .card{
-    background:white;
-    border-radius:20px;
-    padding:20px;
-    margin-bottom:18px;
-    box-shadow:0 5px 20px rgba(0,0,0,.06);
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 5px 20px #0000000d;
 }
-
-/* LOGIN */
-
-.login-card{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
+.dark .card{background:#20232a}
+button,input,select{
+  font:inherit;
 }
-
-.user-area{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.user-photo{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    display:none;
-}
-
-.user-name{
-    font-weight:bold;
-}
-
-.user-email{
-    color:var(--muted);
-    font-size:13px;
-    margin-top:4px;
-}
-
-.login-btn,
-.logout-btn{
-    width:auto;
-    margin:0;
-    padding:11px 17px;
-}
-
-.login-btn{
-    background:white;
-    color:#333;
-    border:1px solid #ddd;
-}
-
-.logout-btn{
-    background:#777;
-}
-
-/* SUMMARY */
-
-.summary{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-}
-
-.summary .card{
-    text-align:center;
-}
-
-.summary h3{
-    color:var(--muted);
-    font-size:14px;
-    margin-bottom:10px;
-}
-
-.amount{
-    font-size:23px;
-    font-weight:bold;
-}
-
-.income{
-    color:var(--green);
-}
-
-.expense{
-    color:var(--red);
-}
-
-.balance{
-    color:var(--purple);
-}
-
-/* FORM */
-
-h2{
-    font-size:20px;
-    margin-bottom:15px;
-}
-
-input,
-select,
 button{
-    width:100%;
-    padding:13px;
-    border-radius:11px;
-    font-size:15px;
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  cursor:pointer;
 }
-
-input,
-select{
-    border:1px solid #ddd;
-    background:white;
-    outline:none;
-    margin-top:10px;
+.primary{background:#7c5cff;color:white}
+.danger{background:#ff5757;color:white}
+.gray{background:#e9e9ef}
+.dark .gray{background:#333740;color:white}
+input,select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  background:white;
+  color:#222;
 }
-
-input:focus,
-select:focus{
-    border-color:var(--pink);
+.dark input,.dark select{
+  background:#2b2f38;
+  color:white;
+  border-color:#444;
 }
-
-button{
-    border:none;
-    background:var(--pink);
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    margin-top:10px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
 }
-
-button:hover{
-    opacity:.9;
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
 }
-
-/* FORM GRID */
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+.stat{
+  padding:18px;
+  border-radius:15px;
+  background:#f1efff;
 }
-
-/* SEARCH */
-
-.search-row{
-    display:grid;
-    grid-template-columns:1fr 180px;
-    gap:10px;
+.dark .stat{background:#2b2f38}
+.stat b{display:block;font-size:24px;margin-top:8px}
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
 }
-
-/* TRANSACTION */
-
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.hidden{display:none!important}
+.center{text-align:center}
+.logo{
+  font-size:30px;
+  font-weight:bold;
+  color:#7c5cff;
+}
 .transaction{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    padding:15px 0;
-    border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid #eee;
 }
-
-.transaction:last-child{
-    border-bottom:none;
+.dark .transaction{border-color:#393d45}
+.income{color:#16a34a}
+.expense{color:#ef4444}
+.small{font-size:13px;color:#777}
+.dark .small{color:#aaa}
+#pinScreen{
+  position:fixed;
+  inset:0;
+  background:#f5f6fa;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
 }
-
-.transaction-left{
-    min-width:0;
+.dark #pinScreen{background:#15171c}
+.pinBox{
+  width:min(400px,90%);
+  text-align:center;
 }
-
-.transaction-name{
-    font-weight:bold;
-    margin-bottom:5px;
-    word-break:break-word;
+.pinInput{
+  text-align:center;
+  font-size:28px;
+  letter-spacing:8px;
 }
-
-.transaction-info{
-    color:var(--muted);
-    font-size:13px;
-}
-
-.transaction-right{
-    text-align:right;
-    white-space:nowrap;
-}
-
-.transaction-amount{
-    font-weight:bold;
-}
-
-.delete-btn{
-    width:auto;
-    background:#ff5757;
-    padding:7px 11px;
-    margin-top:7px;
-    font-size:12px;
-}
-
-.empty{
-    text-align:center;
-    color:#999;
-    padding:25px 10px;
-}
-
-/* STATUS */
-
-.status{
-    text-align:center;
-    color:#888;
-    font-size:13px;
-    margin-bottom:15px;
-}
-
-.loading{
-    opacity:.7;
-}
-
-/* MOBILE */
-
 @media(max-width:700px){
-
-    header h1{
-        font-size:25px;
-    }
-
-    .summary{
-        grid-template-columns:1fr;
-        gap:0;
-    }
-
-    .login-card{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    .login-btn,
-    .logout-btn{
-        width:100%;
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-        gap:0;
-    }
-
-    .search-row{
-        grid-template-columns:1fr;
-    }
-
-    .transaction{
-        align-items:flex-start;
-    }
-
-    .transaction-right{
-        max-width:45%;
-    }
+  .grid,.stats{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <h1>🌸 Megumi Chi Tiêu</h1>
-    <p>Quản lý chi tiêu cá nhân</p>
-</header>
+<!-- MÀN HÌNH PIN -->
+<div id="pinScreen" class="hidden">
+  <div class="card pinBox">
+    <div class="logo">Megumi Chi Tiêu</div>
+    <h2>🔐 Nhập mã PIN</h2>
+    <p class="small">Nhập mã PIN để tiếp tục</p>
+
+    <input
+      id="pinInput"
+      class="pinInput"
+      type="password"
+      inputmode="numeric"
+      maxlength="6"
+      placeholder="••••••"
+    >
+
+    <br><br>
+
+    <button class="primary" onclick="unlockWithPin()">
+      Mở khóa
+    </button>
+
+    <button class="gray" onclick="logout()" style="margin-left:5px">
+      Đăng xuất
+    </button>
+
+    <p id="pinError" class="expense"></p>
+  </div>
+</div>
+
 
 <div class="container">
 
-    <!-- LOGIN -->
+  <!-- LOGIN -->
+  <section id="loginPage">
+    <div class="card center" style="max-width:450px;margin:60px auto">
 
-    <div class="card login-card">
+      <div class="logo">Megumi Chi Tiêu</div>
 
-        <div id="loginArea">
+      <h2>Đăng nhập</h2>
 
-            <h2>🔐 Megumi Chi Tiêu</h2>
+      <input id="email" type="email" placeholder="Email">
+      <br><br>
 
-            <div class="user-email">
-                Đăng nhập để lưu và đồng bộ dữ liệu.
-            </div>
+      <input id="password" type="password" placeholder="Mật khẩu">
+      <br><br>
 
-        </div>
+      <button class="primary" style="width:100%" onclick="loginEmail()">
+        Đăng nhập
+      </button>
 
-        <button
-            id="googleLogin"
-            class="login-btn"
-        >
-            🔵 Đăng nhập bằng Google
-        </button>
+      <br><br>
 
-        <div
-            id="userArea"
-            class="user-area"
-            style="display:none;"
-        >
+      <button class="gray" style="width:100%" onclick="registerEmail()">
+        Tạo tài khoản
+      </button>
 
-            <img
-                id="userPhoto"
-                class="user-photo"
-                alt="Ảnh đại diện"
-            >
+      <br><br>
 
-            <div>
-                <div
-                    id="userName"
-                    class="user-name"
-                ></div>
+      <button class="gray" style="width:100%" onclick="loginGoogle()">
+        🔵 Đăng nhập bằng Google
+      </button>
 
-                <div
-                    id="userEmail"
-                    class="user-email"
-                ></div>
-            </div>
+      <br>
 
-            <button
-                id="logoutBtn"
-                class="logout-btn"
-            >
-                Đăng xuất
-            </button>
+      <button class="gray" style="width:100%;margin-top:10px"
+              onclick="resetPassword()">
+        Quên mật khẩu
+      </button>
 
-        </div>
-
+      <p id="loginMessage" class="small"></p>
     </div>
+  </section>
 
 
-    <div
-        id="status"
-        class="status"
-    >
-        Chưa đăng nhập
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div class="summary">
-
-        <div class="card">
-
-            <h3>💰 Tổng thu</h3>
-
-            <div
-                id="totalIncome"
-                class="amount income"
-            >
-                0 ₫
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>💸 Tổng chi</h3>
-
-            <div
-                id="totalExpense"
-                class="amount expense"
-            >
-                0 ₫
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>💵 Số dư</h3>
-
-            <div
-                id="balance"
-                class="amount balance"
-            >
-                0 ₫
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ADD -->
+  <!-- APP -->
+  <section id="app" class="hidden">
 
     <div class="card">
+      <div class="row">
+        <div>
+          <div class="logo">Megumi Chi Tiêu</div>
+          <div class="small" id="userName"></div>
+        </div>
 
-        <h2>➕ Thêm giao dịch</h2>
+        <div class="actions">
+          <button class="gray" onclick="toggleDark()">🌙</button>
+          <button class="gray" onclick="changePin()">🔐 PIN</button>
+          <button class="danger" onclick="logout()">Đăng xuất</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- THỐNG KÊ -->
+    <div class="stats">
+
+      <div class="stat">
+        <span>Số dư</span>
+        <b id="balance">0 đ</b>
+      </div>
+
+      <div class="stat">
+        <span>Thu nhập</span>
+        <b id="income" class="income">0 đ</b>
+      </div>
+
+      <div class="stat">
+        <span>Chi tiêu</span>
+        <b id="expense" class="expense">0 đ</b>
+      </div>
+
+    </div>
+
+
+    <!-- NGÂN SÁCH -->
+    <div class="card">
+
+      <h3>💰 Ngân sách tháng</h3>
+
+      <div class="grid">
+        <div>
+          <label>Ngân sách</label>
+          <input id="budget" type="number" placeholder="Ví dụ: 5000000">
+        </div>
+
+        <div style="display:flex;align-items:end">
+          <button class="primary" onclick="saveBudget()">
+            Lưu ngân sách
+          </button>
+        </div>
+      </div>
+
+      <p id="budgetText" class="small"></p>
+
+    </div>
+
+
+    <!-- THÊM GIAO DỊCH -->
+    <div class="card">
+
+      <h3>➕ Thêm giao dịch</h3>
+
+      <div class="grid">
+
+        <div>
+          <label>Loại</label>
+          <select id="type">
+            <option value="expense">Chi tiêu</option>
+            <option value="income">Thu nhập</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Số tiền</label>
+          <input
+            id="amount"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="15.600"
+          >
+        </div>
+
+        <div>
+          <label>Danh mục</label>
+          <select id="category">
+            <option>Ăn uống</option>
+            <option>Đi lại</option>
+            <option>Mua sắm</option>
+            <option>Học tập</option>
+            <option>Giải trí</option>
+            <option>Hóa đơn</option>
+            <option>Lương</option>
+            <option>Khác</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Ghi chú</label>
+          <input id="note" placeholder="Ví dụ: mua trà sữa">
+        </div>
+
+      </div>
+
+      <br>
+
+      <button class="primary" onclick="addTransaction()">
+        Thêm giao dịch
+      </button>
+
+    </div>
+
+
+    <!-- TÌM KIẾM -->
+    <div class="card">
+
+      <div class="grid">
 
         <input
-            id="name"
-            type="text"
-            placeholder="Tên giao dịch, VD: Ăn sáng"
+          id="search"
+          placeholder="🔎 Tìm kiếm..."
+          oninput="renderTransactions()"
         >
 
+        <select id="filterType" onchange="renderTransactions()">
+          <option value="all">Tất cả</option>
+          <option value="income">Thu nhập</option>
+          <option value="expense">Chi tiêu</option>
+        </select>
 
-        <div class="form-grid">
+      </div>
 
-            <input
-                id="money"
-                type="number"
-                min="0"
-                step="1"
-                placeholder="Số tiền"
-            >
-
-
-            <input
-                id="date"
-                type="date"
-            >
-
-        </div>
+    </div>
 
 
-        <div class="form-grid">
+    <!-- DANH SÁCH -->
+    <div class="card">
 
-            <select id="type">
+      <div class="row">
+        <h3>📋 Giao dịch</h3>
 
-                <option value="expense">
-                    💸 Khoản chi
-                </option>
-
-                <option value="income">
-                    💰 Khoản thu
-                </option>
-
-            </select>
-
-
-            <select id="category">
-
-                <option value="🍜 Ăn uống">
-                    🍜 Ăn uống
-                </option>
-
-                <option value="🚗 Đi lại">
-                    🚗 Đi lại
-                </option>
-
-                <option value="🛍️ Mua sắm">
-                    🛍️ Mua sắm
-                </option>
-
-                <option value="📚 Học tập">
-                    📚 Học tập
-                </option>
-
-                <option value="🏠 Nhà ở">
-                    🏠 Nhà ở
-                </option>
-
-                <option value="🎮 Giải trí">
-                    🎮 Giải trí
-                </option>
-
-                <option value="💼 Công việc">
-                    💼 Công việc
-                </option>
-
-                <option value="📦 Khác">
-                    📦 Khác
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <button id="addBtn">
-            ➕ Thêm giao dịch
+        <button class="gray" onclick="exportCSV()">
+          Xuất CSV
         </button>
+      </div>
+
+      <div id="transactionList"></div>
 
     </div>
 
-
-    <!-- SEARCH -->
-
-    <div class="card">
-
-        <h2>🔎 Tìm kiếm</h2>
-
-        <div class="search-row">
-
-            <input
-                id="search"
-                type="text"
-                placeholder="Tìm giao dịch..."
-            >
-
-            <select id="filterType">
-
-                <option value="all">
-                    Tất cả
-                </option>
-
-                <option value="income">
-                    💰 Khoản thu
-                </option>
-
-                <option value="expense">
-                    💸 Khoản chi
-                </option>
-
-            </select>
-
-        </div>
-
-    </div>
-
-
-    <!-- HISTORY -->
-
-    <div class="card">
-
-        <h2>📋 Lịch sử giao dịch</h2>
-
-        <div id="transactionList">
-
-            <div class="empty">
-                Hãy đăng nhập để xem giao dịch.
-            </div>
-
-        </div>
-
-    </div>
+  </section>
 
 </div>
 
 
-<!-- FIREBASE -->
-
 <script type="module">
 
 import {
-    initializeApp
+  initializeApp
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
-
 import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-
 import {
-    getFirestore,
-    collection,
-    addDoc,
-    deleteDoc,
-    doc,
-    query,
-    orderBy,
-    onSnapshot,
-    serverTimestamp
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  query,
+  orderBy,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
-/* FIREBASE CONFIG */
-
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyA75Nfy9Ti_z1aWiVk7E4UsmRmgThTVv3Q",
-
-    authDomain:
-        "megumi-chi-tieu.firebaseapp.com",
-
-    projectId:
-        "megumi-chi-tieu",
-
-    storageBucket:
-        "megumi-chi-tieu.firebasestorage.app",
-
-    messagingSenderId:
-        "570579728873",
-
-    appId:
-        "1:570579728873:web:490687c1c7c415061af378",
-
-    measurementId:
-        "G-F6M79HB9K3"
+  apiKey: "AIzaSyA75Nfy9Ti_z1aWiVk7E4UsmRmgThTVv3Q",
+  authDomain: "megumi-chi-tieu.firebaseapp.com",
+  projectId: "megumi-chi-tieu",
+  storageBucket: "megumi-chi-tieu.firebasestorage.app",
+  messagingSenderId: "570579728873",
+  appId: "1:570579728873:web:490687c1c7c415061af378",
+  measurementId: "G-F6M79HB9K3"
 };
 
 
-/* START FIREBASE */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-const app =
-    initializeApp(firebaseConfig);
-
-
-/* AUTH */
-
-const auth =
-    getAuth(app);
-
-
-const provider =
-    new GoogleAuthProvider();
-
-
-/* FIRESTORE */
-
-const db =
-    getFirestore(app);
-
-
-/* ELEMENTS */
-
-const googleLogin =
-    document.getElementById(
-        "googleLogin"
-    );
-
-const logoutBtn =
-    document.getElementById(
-        "logoutBtn"
-    );
-
-const userArea =
-    document.getElementById(
-        "userArea"
-    );
-
-const userPhoto =
-    document.getElementById(
-        "userPhoto"
-    );
-
-const userName =
-    document.getElementById(
-        "userName"
-    );
-
-const userEmail =
-    document.getElementById(
-        "userEmail"
-    );
-
-const status =
-    document.getElementById(
-        "status"
-    );
-
-const list =
-    document.getElementById(
-        "transactionList"
-    );
-
+const provider = new GoogleAuthProvider();
 
 let currentUser = null;
-
+let transactions = [];
 let unsubscribeTransactions = null;
 
-let transactions = [];
 
+/* =========================
+   TIỆN ÍCH
+========================= */
 
-/* GOOGLE LOGIN */
+function money(value){
+  return new Intl.NumberFormat("vi-VN").format(Number(value || 0)) + " đ";
+}
 
-googleLogin.addEventListener(
-    "click",
-    async () => {
+function show(id){
+  document.getElementById(id).classList.remove("hidden");
+}
 
-        try {
-
-            googleLogin.disabled = true;
-
-            googleLogin.textContent =
-                "Đang đăng nhập...";
-
-            await signInWithPopup(
-                auth,
-                provider
-            );
-
-        } catch(error) {
-
-            console.error(error);
-
-            alert(
-                "Không thể đăng nhập Google.\n\n" +
-                error.message
-            );
-
-        } finally {
-
-            googleLogin.disabled = false;
-
-            googleLogin.textContent =
-                "🔵 Đăng nhập bằng Google";
-
-        }
-
-    }
-);
-
-
-/* LOGOUT */
-
-logoutBtn.addEventListener(
-    "click",
-    async () => {
-
-        await signOut(auth);
-
-    }
-);
-
-
-/* AUTH STATE */
-
-onAuthStateChanged(
-    auth,
-    user => {
-
-        currentUser = user;
-
-
-        if(user){
-
-            googleLogin.style.display =
-                "none";
-
-            userArea.style.display =
-                "flex";
-
-
-            userName.textContent =
-                user.displayName ||
-                "Người dùng";
-
-
-            userEmail.textContent =
-                user.email || "";
-
-
-            if(user.photoURL){
-
-                userPhoto.src =
-                    user.photoURL;
-
-                userPhoto.style.display =
-                    "block";
-
-            }
-
-
-            status.textContent =
-                "☁️ Đã đăng nhập — dữ liệu được lưu trên Firebase";
-
-
-            loadTransactions();
-
-        }else{
-
-            googleLogin.style.display =
-                "block";
-
-            userArea.style.display =
-                "none";
-
-
-            userPhoto.style.display =
-                "none";
-
-
-            status.textContent =
-                "🔐 Hãy đăng nhập để sử dụng";
-
-
-            transactions = [];
-
-            if(unsubscribeTransactions){
-
-                unsubscribeTransactions();
-
-                unsubscribeTransactions =
-                    null;
-
-            }
-
-
-            renderTransactions();
-
-        }
-
-    }
-);
-
-
-/* LOAD DATA */
-
-function loadTransactions(){
-
-    if(!currentUser)
-        return;
-
-
-    if(unsubscribeTransactions){
-
-        unsubscribeTransactions();
-
-    }
-
-
-    const transactionsRef =
-        collection(
-            db,
-            "users",
-            currentUser.uid,
-            "transactions"
-        );
-
-
-    const q =
-        query(
-            transactionsRef,
-            orderBy(
-                "createdAt",
-                "desc"
-            )
-        );
-
-
-    unsubscribeTransactions =
-        onSnapshot(
-            q,
-            snapshot => {
-
-                transactions =
-                    snapshot.docs.map(
-                        item => ({
-
-                            id:item.id,
-
-                            ...item.data()
-
-                        })
-                    );
-
-
-                renderTransactions();
-
-            },
-
-            error => {
-
-                console.error(error);
-
-                list.innerHTML =
-                    `
-                    <div class="empty">
-                        Không thể tải dữ liệu.
-                        <br>
-                        Hãy kiểm tra Firestore Rules.
-                    </div>
-                    `;
-
-            }
-        );
-
+function hide(id){
+  document.getElementById(id).classList.add("hidden");
 }
 
 
-/* ADD TRANSACTION */
+/* =========================
+   HASH PIN
+========================= */
 
-document
-.getElementById("addBtn")
-.addEventListener(
-    "click",
-    async () => {
+async function hashPin(pin){
 
-        if(!currentUser){
+  const data = new TextEncoder().encode(pin);
 
-            alert(
-                "Bạn cần đăng nhập Google trước!"
-            );
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    data
+  );
 
-            return;
-
-        }
-
-
-        const name =
-            document
-            .getElementById("name")
-            .value
-            .trim();
+  return Array.from(
+    new Uint8Array(hash)
+  )
+  .map(b => b.toString(16).padStart(2,"0"))
+  .join("");
+}
 
 
-        const money =
-            Number(
-                document
-                .getElementById("money")
-                .value
-            );
+/* =========================
+   TẠO PIN
+========================= */
+
+async function setupPin(){
+
+  let pin = prompt(
+    "Tạo mã PIN 6 số cho thiết bị này:"
+  );
+
+  if(!pin) return;
+
+  if(!/^\d{6}$/.test(pin)){
+    alert("PIN phải gồm đúng 6 số.");
+    return setupPin();
+  }
+
+  let confirmPin = prompt(
+    "Nhập lại mã PIN:"
+  );
+
+  if(pin !== confirmPin){
+    alert("PIN không trùng nhau.");
+    return setupPin();
+  }
+
+  const hash = await hashPin(pin);
+
+  localStorage.setItem(
+    "megumi_pin_" + currentUser.uid,
+    hash
+  );
+
+  localStorage.setItem(
+    "megumi_pin_enabled_" + currentUser.uid,
+    "true"
+  );
+
+  alert("Đã tạo mã PIN.");
+}
 
 
-        const type =
-            document
-            .getElementById("type")
-            .value;
+/* =========================
+   KIỂM TRA PIN
+========================= */
+
+async function checkPin(){
+
+  const key =
+    "megumi_pin_" + currentUser.uid;
+
+  const savedPin =
+    localStorage.getItem(key);
+
+  if(!savedPin){
+
+    await setupPin();
+
+    return true;
+  }
+
+  return false;
+}
 
 
-        const category =
-            document
-            .getElementById("category")
-            .value;
+/* =========================
+   MỞ KHÓA
+========================= */
+
+window.unlockWithPin = async function(){
+
+  const input =
+    document.getElementById("pinInput");
+
+  const error =
+    document.getElementById("pinError");
+
+  const pin = input.value;
+
+  if(!/^\d{6}$/.test(pin)){
+
+    error.textContent =
+      "PIN phải gồm 6 số.";
+
+    return;
+  }
+
+  const hash =
+    await hashPin(pin);
+
+  const saved =
+    localStorage.getItem(
+      "megumi_pin_" + currentUser.uid
+    );
+
+  if(hash === saved){
+
+    input.value = "";
+    error.textContent = "";
+
+    hide("pinScreen");
+    show("app");
+
+    loadUserData();
+
+  }else{
+
+    error.textContent =
+      "PIN không đúng.";
+
+    input.value = "";
+  }
+};
 
 
-        const date =
-            document
-            .getElementById("date")
-            .value;
+/* =========================
+   ĐỔI PIN
+========================= */
+
+window.changePin = async function(){
+
+  const oldPin = prompt(
+    "Nhập PIN hiện tại:"
+  );
+
+  if(!oldPin) return;
+
+  const oldHash =
+    await hashPin(oldPin);
+
+  const saved =
+    localStorage.getItem(
+      "megumi_pin_" + currentUser.uid
+    );
+
+  if(oldHash !== saved){
+
+    alert("PIN hiện tại không đúng.");
+    return;
+  }
+
+  let newPin = prompt(
+    "Nhập PIN mới gồm 6 số:"
+  );
+
+  if(!/^\d{6}$/.test(newPin)){
+
+    alert("PIN phải gồm đúng 6 số.");
+    return;
+  }
+
+  let confirmPin = prompt(
+    "Nhập lại PIN mới:"
+  );
+
+  if(newPin !== confirmPin){
+
+    alert("PIN không trùng nhau.");
+    return;
+  }
+
+  const newHash =
+    await hashPin(newPin);
+
+  localStorage.setItem(
+    "megumi_pin_" + currentUser.uid,
+    newHash
+  );
+
+  alert("Đã đổi PIN.");
+};
 
 
-        if(
-            !name ||
-            !money ||
-            money <= 0
-        ){
+/* =========================
+   GOOGLE LOGIN
+========================= */
 
-            alert(
-                "Vui lòng nhập tên và số tiền!"
-            );
+window.loginGoogle = async function(){
 
-            return;
+  try{
 
-        }
+    await signInWithPopup(
+      auth,
+      provider
+    );
 
+  }catch(error){
 
-        try{
-
-            const transactionsRef =
-                collection(
-                    db,
-                    "users",
-                    currentUser.uid,
-                    "transactions"
-                );
+    document.getElementById(
+      "loginMessage"
+    ).textContent =
+      error.message;
+  }
+};
 
 
-            await addDoc(
-                transactionsRef,
-                {
+/* =========================
+   EMAIL LOGIN
+========================= */
 
-                    name:name,
+window.loginEmail = async function(){
 
-                    money:money,
+  const email =
+    document.getElementById("email").value.trim();
 
-                    type:type,
+  const password =
+    document.getElementById("password").value;
 
-                    category:category,
+  if(!email || !password){
 
-                    date:
-                        date ||
-                        new Date()
-                        .toISOString()
-                        .slice(0,10),
+    alert("Nhập email và mật khẩu.");
+    return;
+  }
 
-                    createdAt:
-                        serverTimestamp()
+  try{
 
-                }
-            );
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
+  }catch(error){
 
-            document
-            .getElementById("name")
-            .value = "";
-
-
-            document
-            .getElementById("money")
-            .value = "";
+    alert(error.message);
+  }
+};
 
 
-            status.textContent =
-                "✅ Đã lưu giao dịch";
+/* =========================
+   ĐĂNG KÝ
+========================= */
 
-        }catch(error){
+window.registerEmail = async function(){
 
-            console.error(error);
+  const email =
+    document.getElementById("email").value.trim();
 
-            alert(
-                "Không thể lưu giao dịch.\n\n" +
-                error.message
-            );
+  const password =
+    document.getElementById("password").value;
 
-        }
+  if(!email || !password){
 
+    alert("Nhập email và mật khẩu.");
+    return;
+  }
+
+  if(password.length < 6){
+
+    alert("Mật khẩu phải có ít nhất 6 ký tự.");
+    return;
+  }
+
+  try{
+
+    const result =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    await updateProfile(
+      result.user,
+      {
+        displayName:
+          email.split("@")[0]
+      }
+    );
+
+    await setDoc(
+      doc(
+        db,
+        "users",
+        result.user.uid
+      ),
+      {
+        email: email,
+        name: email.split("@")[0],
+        budget: 0
+      },
+      {merge:true}
+    );
+
+    alert("Tạo tài khoản thành công.");
+
+  }catch(error){
+
+    alert(error.message);
+  }
+};
+
+
+/* =========================
+   QUÊN MẬT KHẨU
+========================= */
+
+window.resetPassword = async function(){
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  if(!email){
+
+    alert("Nhập email trước.");
+    return;
+  }
+
+  try{
+
+    await sendPasswordResetEmail(
+      auth,
+      email
+    );
+
+    alert(
+      "Đã gửi email đặt lại mật khẩu."
+    );
+
+  }catch(error){
+
+    alert(error.message);
+  }
+};
+
+
+/* =========================
+   AUTH
+========================= */
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    currentUser = user;
+
+    if(!user){
+
+      show("loginPage");
+      hide("app");
+      hide("pinScreen");
+
+      if(unsubscribeTransactions){
+        unsubscribeTransactions();
+        unsubscribeTransactions = null;
+      }
+
+      return;
     }
+
+    hide("loginPage");
+
+    const pinKey =
+      "megumi_pin_" + user.uid;
+
+    const hasPin =
+      localStorage.getItem(pinKey);
+
+    if(!hasPin){
+
+      show("app");
+
+      document.getElementById(
+        "userName"
+      ).textContent =
+        user.displayName ||
+        user.email;
+
+      loadUserData();
+
+      setTimeout(
+        async () => {
+          await setupPin();
+        },
+        500
+      );
+
+    }else{
+
+      hide("app");
+      show("pinScreen");
+
+      document.getElementById(
+        "pinInput"
+      ).focus();
+    }
+  }
 );
 
 
-/* DELETE */
+/* =========================
+   LOAD USER
+========================= */
 
-async function deleteTransaction(id){
+async function loadUserData(){
 
-    if(!currentUser)
-        return;
+  if(!currentUser) return;
+
+  document.getElementById(
+    "userName"
+  ).textContent =
+    currentUser.displayName ||
+    currentUser.email;
+
+  const userRef =
+    doc(
+      db,
+      "users",
+      currentUser.uid
+    );
+
+  const snap =
+    await getDoc(userRef);
+
+  if(snap.exists()){
+
+    const data = snap.data();
+
+    document.getElementById(
+      "budget"
+    ).value =
+      data.budget || 0;
+  }
+
+  listenTransactions();
+}
 
 
-    const ok =
-        confirm(
-            "Bạn có chắc muốn xóa giao dịch này?"
-        );
+/* =========================
+   FIRESTORE TRANSACTIONS
+========================= */
 
+function listenTransactions(){
 
-    if(!ok)
-        return;
+  if(unsubscribeTransactions)
+    unsubscribeTransactions();
 
+  const ref =
+    collection(
+      db,
+      "users",
+      currentUser.uid,
+      "transactions"
+    );
 
-    try{
+  const q =
+    query(
+      ref,
+      orderBy("createdAt","desc")
+    );
 
-        await deleteDoc(
+  unsubscribeTransactions =
+    onSnapshot(
+      q,
+      snapshot => {
 
-            doc(
-                db,
-                "users",
-                currentUser.uid,
-                "transactions",
-                id
-            )
+        transactions =
+          snapshot.docs.map(
+            d => ({
+              id:d.id,
+              ...d.data()
+            })
+          );
 
-        );
+        renderTransactions();
+        updateStats();
 
-    }catch(error){
+      },
+      error => {
 
         console.error(error);
 
         alert(
-            "Không thể xóa giao dịch."
+          "Không thể tải dữ liệu. Hãy kiểm tra Firestore."
         );
-
-    }
-
+      }
+    );
 }
 
 
-/* MAKE DELETE AVAILABLE */
+/* =========================
+   THÊM GIAO DỊCH
+========================= */
 
-window.deleteTransaction =
-    deleteTransaction;
+window.addTransaction = async function(){
 
+  if(!currentUser) return;
 
-/* RENDER */
+  const type =
+    document.getElementById("type").value;
 
-function renderTransactions(){
-
-    const search =
-        document
-        .getElementById("search")
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    const filterType =
-        document
-        .getElementById("filterType")
-        .value;
-
-
-    let filtered =
-        transactions.filter(
-            item => {
-
-                const matchesSearch =
-
-                    String(
-                        item.name || ""
-                    )
-                    .toLowerCase()
-                    .includes(search)
-
-                    ||
-
-                    String(
-                        item.category || ""
-                    )
-                    .toLowerCase()
-                    .includes(search);
-
-
-                const matchesType =
-
-                    filterType === "all"
-
-                    ||
-
-                    item.type === filterType;
-
-
-                return (
-                    matchesSearch &&
-                    matchesType
-                );
-
-            }
-        );
-
-
-    let totalIncome = 0;
-
-    let totalExpense = 0;
-
-
-    transactions.forEach(
-        item => {
-
-            if(
-                item.type === "income"
-            ){
-
-                totalIncome +=
-                    Number(item.money || 0);
-
-            }else{
-
-                totalExpense +=
-                    Number(item.money || 0);
-
-            }
-
-        }
+  const amount =
+    Number(
+      document.getElementById("amount").value
     );
 
+  const category =
+    document.getElementById("category").value;
 
-    const balance =
-        totalIncome -
-        totalExpense;
+  const note =
+    document.getElementById("note").value.trim();
+
+  if(!amount || amount <= 0){
+
+    alert("Nhập số tiền hợp lệ.");
+    return;
+  }
+
+  try{
+
+    await addDoc(
+      collection(
+        db,
+        "users",
+        currentUser.uid,
+        "transactions"
+      ),
+      {
+        type,
+        amount,
+        category,
+        note,
+        createdAt: Date.now()
+      }
+    );
+
+    document.getElementById(
+      "amount"
+    ).value = "";
+
+    document.getElementById(
+      "note"
+    ).value = "";
+
+  }catch(error){
+
+    alert(error.message);
+  }
+};
 
 
-    document
-    .getElementById(
-        "totalIncome"
+/* =========================
+   XÓA GIAO DỊCH
+========================= */
+
+window.deleteTransaction = async function(id){
+
+  if(!confirm("Xóa giao dịch này?"))
+    return;
+
+  await deleteDoc(
+    doc(
+      db,
+      "users",
+      currentUser.uid,
+      "transactions",
+      id
     )
-    .textContent =
-        formatMoney(
-            totalIncome
+  );
+};
+
+
+/* =========================
+   HIỂN THỊ
+========================= */
+
+window.renderTransactions = function(){
+
+  const list =
+    document.getElementById(
+      "transactionList"
+    );
+
+  const search =
+    document.getElementById(
+      "search"
+    ).value.toLowerCase();
+
+  const filter =
+    document.getElementById(
+      "filterType"
+    ).value;
+
+  const filtered =
+    transactions.filter(t => {
+
+      const text =
+        (
+          t.category +
+          " " +
+          (t.note || "")
+        ).toLowerCase();
+
+      const matchSearch =
+        text.includes(search);
+
+      const matchType =
+        filter === "all" ||
+        t.type === filter;
+
+      return matchSearch && matchType;
+    });
+
+  if(filtered.length === 0){
+
+    list.innerHTML =
+      '<p class="small">Chưa có giao dịch.</p>';
+
+    return;
+  }
+
+  list.innerHTML =
+    filtered.map(t => {
+
+      const date =
+        new Date(
+          t.createdAt
+        ).toLocaleString(
+          "vi-VN"
         );
 
+      const sign =
+        t.type === "income"
+          ? "+"
+          : "-";
 
-    document
-    .getElementById(
-        "totalExpense"
-    )
-    .textContent =
-        formatMoney(
-            totalExpense
-        );
+      return `
+        <div class="transaction">
 
+          <div>
+            <b>${escapeHTML(t.category)}</b>
 
-    document
-    .getElementById(
-        "balance"
-    )
-    .textContent =
-        formatMoney(
-            balance
-        );
-
-
-    if(
-        filtered.length === 0
-    ){
-
-        list.innerHTML =
-            `
-            <div class="empty">
-                Chưa có giao dịch.
+            <div class="small">
+              ${escapeHTML(t.note || "")}
             </div>
-            `;
 
-        return;
+            <div class="small">
+              ${date}
+            </div>
+          </div>
 
-    }
+          <div style="text-align:right">
 
+            <b class="${t.type}">
+              ${sign}${money(t.amount)}
+            </b>
 
-    list.innerHTML = "";
+            <br>
 
+            <button
+              class="danger"
+              onclick="deleteTransaction('${t.id}')">
+              Xóa
+            </button>
 
-    filtered.forEach(
-        item => {
+          </div>
 
-            const div =
-                document.createElement(
-                    "div"
-                );
+        </div>
+      `;
 
-
-            div.className =
-                "transaction";
-
-
-            const isIncome =
-                item.type === "income";
-
-
-            const sign =
-                isIncome
-                ? "+"
-                : "-";
+    }).join("");
+};
 
 
-            const color =
-                isIncome
-                ? "var(--green)"
-                : "var(--red)";
+/* =========================
+   THỐNG KÊ
+========================= */
+
+function updateStats(){
+
+  let income = 0;
+  let expense = 0;
+
+  transactions.forEach(t => {
+
+    if(t.type === "income")
+      income += Number(t.amount);
+
+    else
+      expense += Number(t.amount);
+  });
+
+  const balance =
+    income - expense;
+
+  document.getElementById(
+    "income"
+  ).textContent =
+    money(income);
+
+  document.getElementById(
+    "expense"
+  ).textContent =
+    money(expense);
+
+  document.getElementById(
+    "balance"
+  ).textContent =
+    money(balance);
+
+  updateBudget(expense);
+}
 
 
-            div.innerHTML = `
+/* =========================
+   NGÂN SÁCH
+========================= */
 
-                <div
-                    class="transaction-left"
-                >
+window.saveBudget = async function(){
 
-                    <div
-                        class="transaction-name"
-                    >
-                        ${escapeHTML(
-                            item.name || ""
-                        )}
-                    </div>
-
-                    <div
-                        class="transaction-info"
-                    >
-                        ${escapeHTML(
-                            item.category || ""
-                        )}
-                        •
-                        ${item.date || ""}
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="transaction-right"
-                >
-
-                    <div
-                        class="transaction-amount"
-                        style="color:${color}"
-                    >
-                        ${sign}${formatMoney(
-                            item.money || 0
-                        )}
-                    </div>
-
-
-                    <button
-                        class="delete-btn"
-                        onclick="deleteTransaction('${item.id}')"
-                    >
-                        Xóa
-                    </button>
-
-                </div>
-
-            `;
-
-
-            list.appendChild(div);
-
-        }
+  const budget =
+    Number(
+      document.getElementById(
+        "budget"
+      ).value
     );
 
+  await setDoc(
+    doc(
+      db,
+      "users",
+      currentUser.uid
+    ),
+    {
+      budget
+    },
+    {merge:true}
+  );
+
+  updateBudget(
+    transactions
+      .filter(t => t.type === "expense")
+      .reduce(
+        (a,b) => a + Number(b.amount),
+        0
+      )
+  );
+
+  alert("Đã lưu ngân sách.");
+};
+
+
+function updateBudget(expense){
+
+  const budget =
+    Number(
+      document.getElementById(
+        "budget"
+      ).value || 0
+    );
+
+  if(!budget){
+
+    document.getElementById(
+      "budgetText"
+    ).textContent =
+      "Chưa đặt ngân sách.";
+
+    return;
+  }
+
+  const remain =
+    budget - expense;
+
+  document.getElementById(
+    "budgetText"
+  ).textContent =
+    remain >= 0
+      ? `Còn lại: ${money(remain)}`
+      : `Đã vượt: ${money(Math.abs(remain))}`;
 }
 
 
-/* FORMAT MONEY */
+/* =========================
+   CSV
+========================= */
 
-function formatMoney(number){
+window.exportCSV = function(){
 
-    return Number(number)
-        .toLocaleString("vi-VN")
-        + " ₫";
+  if(!transactions.length){
 
+    alert("Chưa có dữ liệu.");
+    return;
+  }
+
+  let csv =
+    "Loại,Danh mục,Số tiền,Ghi chú,Ngày\n";
+
+  transactions.forEach(t => {
+
+    csv +=
+      `"${t.type}",` +
+      `"${t.category}",` +
+      `"${t.amount}",` +
+      `"${(t.note || "").replaceAll('"','""')}",` +
+      `"${new Date(t.createdAt).toLocaleString("vi-VN")}"\n`;
+  });
+
+  const blob =
+    new Blob(
+      ["\ufeff" + csv],
+      {type:"text/csv;charset=utf-8;"}
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+  a.download = "megumi-chi-tieu.csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+window.toggleDark = function(){
+
+  document.body.classList.toggle(
+    "dark"
+  );
+
+  localStorage.setItem(
+    "megumi_dark",
+    document.body.classList.contains("dark")
+      ? "1"
+      : "0"
+  );
+};
+
+if(
+  localStorage.getItem(
+    "megumi_dark"
+  ) === "1"
+){
+  document.body.classList.add("dark");
 }
 
 
-/* ESCAPE HTML */
+/* =========================
+   ĐĂNG XUẤT
+========================= */
 
-function escapeHTML(text){
+window.logout = async function(){
 
-    return String(text)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+  if(!confirm("Đăng xuất khỏi tài khoản?"))
+    return;
 
+  if(unsubscribeTransactions){
+
+    unsubscribeTransactions();
+    unsubscribeTransactions = null;
+  }
+
+  await signOut(auth);
+};
+
+
+/* =========================
+   BẢO VỆ HTML
+========================= */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
-
-
-/* SEARCH */
-
-document
-.getElementById("search")
-.addEventListener(
-    "input",
-    renderTransactions
-);
-
-
-document
-.getElementById("filterType")
-.addEventListener(
-    "change",
-    renderTransactions
-);
-
-
-/* DEFAULT DATE */
-
-document
-.getElementById("date")
-.value =
-    new Date()
-    .toISOString()
-    .slice(0,10);
-
-
-/* INITIAL */
-
-renderTransactions();
 
 </script>
 
