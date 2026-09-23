@@ -3,25 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Megumi Chi Tiêu - Quản Lý Tài Chính Thông Minh</title>
+<title>Megumi Chi Tiêu Pro - Quản Lý Tài Chính</title>
 
 <style>
 :root {
   --primary: #7657ff;
   --primary-hover: #6342eb;
   --bg-gradient: linear-gradient(135deg, #f5f3ff 0%, #eef2ff 50%, #f8fafc 100%);
-  --card-bg: rgba(255, 255, 255, 0.82);
+  --card-bg: rgba(255, 255, 255, 0.88);
   --card-border: rgba(255, 255, 255, 0.7);
   --text-main: #1e293b;
   --text-muted: #64748b;
   --input-bg: rgba(255, 255, 255, 0.9);
   --shadow: 0 12px 35px rgba(50, 40, 100, 0.08);
+  --sidebar-width: 280px;
 }
 
 body.dark {
   --primary: #8b5cf6;
   --bg-gradient: linear-gradient(135deg, #0f172a 0%, #111827 50%, #1e1b4b 100%);
-  --card-bg: rgba(30, 41, 59, 0.85);
+  --card-bg: rgba(30, 41, 59, 0.88);
   --card-border: rgba(255, 255, 255, 0.1);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
@@ -36,23 +37,114 @@ body {
   background: var(--bg-gradient);
   color: var(--text-main);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-.container { max-width: 1150px; margin: auto; padding: 22px; }
+/* SIDEBAR STYLING */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: calc(-1 * var(--sidebar-width));
+  width: var(--sidebar-width);
+  height: 100%;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--card-border);
+  box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+  z-index: 1000;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 15px 10px;
+  margin: 0;
+  flex: 1;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  transition: all 0.2s;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  background: rgba(118, 87, 255, 0.15);
+  color: var(--primary);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hamburger-btn {
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hamburger-btn:hover {
+  background: rgba(0,0,0,0.06);
+}
+.dark .hamburger-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.container { max-width: 1100px; margin: auto; padding: 18px; }
 
 .card {
   background: var(--card-bg);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--card-border);
-  border-radius: 22px;
-  padding: 22px;
+  border-radius: 20px;
+  padding: 20px;
   margin-bottom: 20px;
   box-shadow: var(--shadow);
 }
 
 .logo {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 900;
   background: linear-gradient(90deg, #7657ff, #a855f7, #ec4899);
   -webkit-background-clip: text;
@@ -64,8 +156,8 @@ body {
 
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
 .stat {
-  padding: 20px;
-  border-radius: 20px;
+  padding: 18px;
+  border-radius: 18px;
   background: linear-gradient(135deg, rgba(237, 233, 254, 0.6), rgba(224, 231, 255, 0.6));
   border: 1px solid rgba(221, 214, 254, 0.5);
   backdrop-filter: blur(10px);
@@ -74,8 +166,7 @@ body {
   background: linear-gradient(135deg, rgba(41, 37, 61, 0.6), rgba(32, 40, 61, 0.6));
   border-color: rgba(59, 66, 96, 0.5);
 }
-.stat b { display: block; font-size: 24px; margin-top: 8px; }
-.stat .icon { font-size: 26px; }
+.stat b { display: block; font-size: 22px; margin-top: 6px; }
 
 .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -125,7 +216,6 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
 .dark .transaction { border-color: rgba(255,255,255,0.06); }
 .transaction:last-child { border-bottom: 0; }
 
-.transaction-left { display: flex; align-items: center; gap: 12px; }
 .category-icon {
   width: 42px;
   height: 42px;
@@ -179,25 +269,60 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
 .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: bold; background: rgba(118, 87, 255, 0.15); color: var(--primary); }
 .empty { text-align: center; padding: 35px 10px; color: var(--text-muted); }
 
+.view-section { display: none; }
+.view-section.active { display: block; }
+
 @media(max-width: 800px) {
   .stats, .grid-4 { grid-template-columns: 1fr 1fr; }
   .quick-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media(max-width: 600px) {
   .stats, .grid, .grid-4 { grid-template-columns: 1fr; }
-  .container { padding: 12px; }
+  .container { padding: 10px; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOCK / PIN SCREEN -->
+<!-- OVERLAY BACKGROUND CHO MENU -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR NAVIGATION MENU (BA GẠCH TRÁI) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">Megumi Pro ✨</div>
+    <button class="hamburger-btn" onclick="toggleSidebar()">✕</button>
+  </div>
+  <ul class="sidebar-menu">
+    <li class="sidebar-item active" onclick="switchTab('dashboard')">
+      <span>📊</span> Tổng quan & Thu chi
+    </li>
+    <li class="sidebar-item" onclick="switchTab('budgetSection')">
+      <span>💰</span> Ngân sách khả dụng
+    </li>
+    <li class="sidebar-item" onclick="switchTab('savingSection')">
+      <span>🎯</span> Mục tiêu tiết kiệm
+    </li>
+    <li class="sidebar-item" onclick="switchTab('historySection')">
+      <span>📋</span> Lịch sử & Tìm kiếm
+    </li>
+    <li class="sidebar-item" onclick="switchTab('analyticsSection')">
+      <span>📈</span> Phân tích danh mục
+    </li>
+  </ul>
+  <div style="padding: 20px; border-top: 1px solid var(--card-border);">
+    <button class="gray" style="width:100%; margin-bottom:8px;" onclick="changePin()">🔐 Đổi PIN</button>
+    <button class="danger" style="width:100%;" onclick="logout()">🚪 Đăng xuất</button>
+  </div>
+</aside>
+
+<!-- MÀN HÌNH MÃ PIN -->
 <div id="pinScreen" class="hidden">
   <div class="card pinBox center">
     <div class="logo">Megumi Chi Tiêu</div>
-    <h2>🔐 Khóa PIN</h2>
-    <p class="small">Nhập mã PIN 6 số để truy cập ứng dụng</p>
+    <h2>🔐 Khóa PIN Bảo Mật</h2>
+    <p class="small">Nhập mã PIN 6 số để vào ứng dụng</p>
     <input id="pinInput" style="text-align:center; font-size: 26px; letter-spacing: 6px;" type="password" inputmode="numeric" maxlength="6" placeholder="••••••">
     <br><br>
     <button class="primary" style="width:100%" onclick="unlockPin()">Mở khóa</button>
@@ -206,7 +331,7 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
   </div>
 </div>
 
-<!-- EDIT TRANSACTION MODAL -->
+<!-- MODAL CHỈNH SỬA GIAO DỊCH -->
 <div id="editModal" class="modal-overlay hidden">
   <div class="card modal-box">
     <h3>✏️ Chỉnh sửa giao dịch</h3>
@@ -244,18 +369,18 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
     
     <div class="row">
       <button class="gray" style="width:48%" onclick="closeEditModal()">Hủy</button>
-      <button class="primary" style="width:48%" onclick="saveEditedTransaction()">Lưu lại</button>
+      <button class="primary" style="width:48%" onclick="saveEditedTransaction()">Lưu thay đổi</button>
     </div>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- LOGIN PAGE -->
+  <!-- MÀN HÌNH ĐĂNG NHẬP -->
   <div id="loginPage">
     <div class="card center" style="max-width:420px; margin: 60px auto;">
       <div class="logo">Megumi Chi Tiêu</div>
-      <p class="small">Quản lý tài chính cá nhân hiện đại & tối ưu ✨</p>
+      <p class="small">Quản lý tài chính cá nhân thông minh ✨</p>
       <h2>Đăng nhập</h2>
       <input id="email" type="email" placeholder="📧 Email"><br><br>
       <input id="password" type="password" placeholder="🔒 Mật khẩu"><br><br>
@@ -269,215 +394,221 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
   <!-- MAIN APP CONTAINER -->
   <div id="app" class="hidden">
 
-    <!-- HEADER CARD -->
+    <!-- HEADER CARD VỚI NÚT MENU BA GẠCH GÓC TRÁI -->
     <div class="card">
       <div class="row">
-        <div>
-          <div class="logo">Megumi Chi Tiêu ✨</div>
-          <div id="userName" class="small"></div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <!-- NÚT BA GẠCH TRÁI (HAMBURGER BUTTON) -->
+          <button class="hamburger-btn" onclick="toggleSidebar()" title="Mở Menu">☰</button>
+          <div>
+            <div class="logo">Megumi Chi Tiêu Pro</div>
+            <div id="userName" class="small"></div>
+          </div>
         </div>
         <div class="actions">
           <button class="gray" onclick="toggleDark()" id="darkBtn">🌙</button>
-          <button class="gray" onclick="changePin()">🔐 PIN</button>
-          <button class="danger" onclick="logout()">Đăng xuất</button>
         </div>
       </div>
     </div>
 
-    <!-- OVERVIEW STATS -->
+    <!-- OVERVIEW STATS (LUÔN HIỂN THỊ) -->
     <div class="stats">
       <div class="stat">
-        <div class="icon">💳</div>
-        <span class="small">Số dư hiện tại (Gồm Ngân sách)</span>
+        <span class="small">💳 Số dư (Đã cộng Ngân sách)</span>
         <b id="balance">0 đ</b>
       </div>
       <div class="stat">
-        <div class="icon">📈</div>
-        <span class="small">Tổng thu nhập</span>
+        <span class="small">📈 Tổng thu nhập</span>
         <b id="income" class="income">0 đ</b>
       </div>
       <div class="stat">
-        <div class="icon">📉</div>
-        <span class="small">Tổng chi tiêu</span>
+        <span class="small">📉 Tổng chi tiêu</span>
         <b id="expense" class="expense">0 đ</b>
       </div>
     </div>
 
-    <!-- MỤC TIÊU TIẾT KIỆM -->
-    <div class="card">
-      <div class="row">
-        <div>
-          <h3>🎯 Sổ Tiết Kiệm & Mục Tiêu</h3>
-          <p class="small">Theo dõi khoản tích lũy ước mơ của bạn</p>
-        </div>
-        <span class="badge" id="savingGoalPercent">0%</span>
-      </div>
-      <div class="grid">
-        <div>
-          <label>Tên mục tiêu</label>
-          <input id="goalName" placeholder="VD: Mua Laptop, Đi Du Lịch...">
-        </div>
-        <div>
-          <label>Mục tiêu số tiền</label>
-          <input id="goalTarget" type="text" inputmode="decimal" placeholder="10.000.000">
+    <!-- TAB 1: DASHBOARD & THÊM MỚI -->
+    <div id="dashboard" class="view-section active">
+      <!-- QUAN NHAU CHỌN TIỀN -->
+      <div class="card">
+        <h3>⚡ Nhập nhanh số tiền</h3>
+        <div class="quick-grid">
+          <div class="quick" onclick="quickAmount(10000)">10.000đ</div>
+          <div class="quick" onclick="quickAmount(20000)">20.000đ</div>
+          <div class="quick" onclick="quickAmount(50000)">50.000đ</div>
+          <div class="quick" onclick="quickAmount(100000)">100.000đ</div>
         </div>
       </div>
-      <br>
-      <div class="row">
+
+      <!-- FORM THÊM GIAO DỊCH -->
+      <div class="card">
+        <h3>➕ Thêm giao dịch mới</h3>
+        <div class="grid">
+          <div>
+            <label>Loại giao dịch</label>
+            <select id="type">
+              <option value="expense">💸 Chi tiêu</option>
+              <option value="income">💰 Thu nhập</option>
+            </select>
+          </div>
+          <div>
+            <label>Số tiền (ví dụ: 15k, 500k, 1.5tr)</label>
+            <input id="amount" type="text" inputmode="decimal" placeholder="VD: 50k, 1.2tr...">
+          </div>
+          <div>
+            <label>Danh mục</label>
+            <select id="category">
+              <option>🍜 Ăn uống</option>
+              <option>🚌 Đi lại</option>
+              <option>🛍️ Mua sắm</option>
+              <option>📚 Học tập</option>
+              <option>🎮 Giải trí</option>
+              <option>🏠 Hóa đơn</option>
+              <option>💼 Lương</option>
+              <option>🎁 Quà tặng</option>
+              <option>💰 Tiết kiệm</option>
+              <option>📦 Khác</option>
+            </select>
+          </div>
+          <div>
+            <label>Ghi chú</label>
+            <input id="note" placeholder="Ví dụ: Ăn trưa, Cà phê...">
+          </div>
+        </div>
+        <br>
+        <button class="primary" onclick="addTransaction()" style="width:100%">➕ Lưu Giao Dịch</button>
+      </div>
+    </div>
+
+    <!-- TAB 2: NGÂN SÁCH -->
+    <div id="budgetSection" class="view-section">
+      <div class="card">
+        <div class="row">
+          <div>
+            <h3>💰 Ngân sách khả dụng</h3>
+            <p class="small">Số tiền ngân sách sẽ được cộng trực tiếp vào Số dư hiện tại</p>
+          </div>
+          <span class="badge" id="budgetPercent">0%</span>
+        </div>
+        <div class="grid">
+          <div>
+            <label>Hạn mức ngân sách ban đầu</label>
+            <input id="budget" type="text" inputmode="decimal" placeholder="5.000.000">
+          </div>
+          <div style="display:flex; align-items:flex-end">
+            <button class="primary" onclick="saveBudget()" style="width:100%">💾 Cập nhật Ngân sách</button>
+          </div>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" id="budgetProgress"></div>
+        </div>
+        <div class="row small" style="margin-top: 8px;">
+          <span id="budgetText">Chưa đặt ngân sách</span>
+          <span id="budgetUsed">0% chi dùng</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: TIẾT KIỆM -->
+    <div id="savingSection" class="view-section">
+      <div class="card">
+        <div class="row">
+          <div>
+            <h3>🎯 Sổ Tiết Kiệm & Mục Tiêu</h3>
+            <p class="small">Theo dõi các khoản tích lũy ước mơ của bạn</p>
+          </div>
+          <span class="badge" id="savingGoalPercent">0%</span>
+        </div>
+        <div class="grid">
+          <div>
+            <label>Tên mục tiêu</label>
+            <input id="goalName" placeholder="VD: Mua xe, Đi du lịch...">
+          </div>
+          <div>
+            <label>Số tiền mục tiêu</label>
+            <input id="goalTarget" type="text" inputmode="decimal" placeholder="10.000.000">
+          </div>
+        </div>
+        <br>
         <button class="primary" style="width:100%" onclick="saveGoal()">💾 Cập nhật Mục tiêu</button>
-      </div>
-      <div class="progress">
-        <div class="progress-bar" id="goalProgress"></div>
-      </div>
-      <div class="row small" style="margin-top: 8px;">
-        <span id="goalText">Đã tích lũy: 0 đ / 0 đ</span>
-        <span id="goalRemain">Còn thiếu: 0 đ</span>
-      </div>
-    </div>
-
-    <!-- MONTHLY BUDGET CARD -->
-    <div class="card">
-      <div class="row">
-        <div>
-          <h3>💰 Ngân sách khả dụng</h3>
-          <p class="small">Số tiền ngân sách được cộng trực tiếp vào Số dư</p>
+        <div class="progress">
+          <div class="progress-bar" id="goalProgress"></div>
         </div>
-        <span class="badge" id="budgetPercent">0%</span>
-      </div>
-      <div class="grid">
-        <div>
-          <label>Ngân sách ban đầu</label>
-          <input id="budget" type="text" inputmode="decimal" placeholder="5.000.000">
-        </div>
-        <div style="display:flex; align-items:flex-end">
-          <button class="primary" onclick="saveBudget()" style="width:100%">💾 Cập nhật Ngân sách</button>
-        </div>
-      </div>
-      <div class="progress">
-        <div class="progress-bar" id="budgetProgress"></div>
-      </div>
-      <div class="row small" style="margin-top: 8px;">
-        <span id="budgetText">Chưa đặt ngân sách</span>
-        <span id="budgetUsed">0%</span>
-      </div>
-    </div>
-
-    <!-- QUICK INPUT CARD -->
-    <div class="card">
-      <h3>⚡ Nhập nhanh số tiền</h3>
-      <div class="quick-grid">
-        <div class="quick" onclick="quickAmount(10000)">10.000đ</div>
-        <div class="quick" onclick="quickAmount(20000)">20.000đ</div>
-        <div class="quick" onclick="quickAmount(50000)">50.000đ</div>
-        <div class="quick" onclick="quickAmount(100000)">100.000đ</div>
-      </div>
-    </div>
-
-    <!-- ADD TRANSACTION FORM -->
-    <div class="card">
-      <h3>➕ Thêm giao dịch</h3>
-      <div class="grid">
-        <div>
-          <label>Loại giao dịch</label>
-          <select id="type">
-            <option value="expense">💸 Chi tiêu</option>
-            <option value="income">💰 Thu nhập</option>
-          </select>
-        </div>
-        <div>
-          <label>Số tiền</label>
-          <input id="amount" type="text" inputmode="decimal" placeholder="15.000 / 50k / 1.5tr">
-        </div>
-        <div>
-          <label>Danh mục</label>
-          <select id="category">
-            <option>🍜 Ăn uống</option>
-            <option>🚌 Đi lại</option>
-            <option>🛍️ Mua sắm</option>
-            <option>📚 Học tập</option>
-            <option>🎮 Giải trí</option>
-            <option>🏠 Hóa đơn</option>
-            <option>💼 Lương</option>
-            <option>🎁 Quà tặng</option>
-            <option>💰 Tiết kiệm</option>
-            <option>📦 Khác</option>
-          </select>
-        </div>
-        <div>
-          <label>Ghi chú</label>
-          <input id="note" placeholder="Ví dụ: Cà phê sáng...">
-        </div>
-      </div>
-      <br>
-      <button class="primary" onclick="addTransaction()" style="width:100%">➕ Thêm giao dịch ngay</button>
-    </div>
-
-    <!-- SEARCH & ADVANCED DATE FILTER -->
-    <div class="card">
-      <h3>🔎 Tìm kiếm & Lọc nâng cao</h3>
-      <div class="grid-4">
-        <div>
-          <label>Từ khóa</label>
-          <input id="search" placeholder="Ghi chú, danh mục..." oninput="renderTransactions()">
-        </div>
-        <div>
-          <label>Loại</label>
-          <select id="filterType" onchange="renderTransactions()">
-            <option value="all">Tất cả</option>
-            <option value="income">Thu nhập</option>
-            <option value="expense">Chi tiêu</option>
-          </select>
-        </div>
-        <div>
-          <label>Lọc Thời Gian</label>
-          <select id="filterDateRange" onchange="handleDateRangeChange()">
-            <option value="all">Tất cả thời gian</option>
-            <option value="today">Hôm nay</option>
-            <option value="thisMonth">Tháng này</option>
-            <option value="custom">Tùy chọn ngày</option>
-          </select>
-        </div>
-        <div>
-          <label>Sắp xếp</label>
-          <select id="sortOrder" onchange="renderTransactions()">
-            <option value="newest">Mới nhất</option>
-            <option value="oldest">Cũ nhất</option>
-            <option value="high">Số tiền: Cao → Thấp</option>
-            <option value="low">Số tiền: Thấp → Cao</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- CUSTOM DATE RANGE INPUTS -->
-      <div id="customDateContainer" class="grid hidden" style="margin-top:14px">
-        <div>
-          <label>Từ ngày</label>
-          <input type="date" id="startDate" onchange="renderTransactions()">
-        </div>
-        <div>
-          <label>Đến ngày</label>
-          <input type="date" id="endDate" onchange="renderTransactions()">
+        <div class="row small" style="margin-top: 8px;">
+          <span id="goalText">Đã tích lũy: 0 đ / 0 đ</span>
+          <span id="goalRemain">Còn thiếu: 0 đ</span>
         </div>
       </div>
     </div>
 
-    <!-- CATEGORY VISUALIZATION BREAKDOWN -->
-    <div class="card">
-      <h3>📊 Cơ cấu Chi tiêu theo Danh mục</h3>
-      <p class="small">Phân tích mức độ chi tiêu trực quan</p>
-      <div id="categoryBreakdown" style="margin-top:15px"></div>
+    <!-- TAB 4: LỊCH SỬ & TÌM KIẾM -->
+    <div id="historySection" class="view-section">
+      <div class="card">
+        <h3>🔎 Tìm kiếm & Lọc giao dịch</h3>
+        <div class="grid-4">
+          <div>
+            <label>Từ khóa</label>
+            <input id="search" placeholder="Ghi chú, danh mục..." oninput="renderTransactions()">
+          </div>
+          <div>
+            <label>Loại thu/chi</label>
+            <select id="filterType" onchange="renderTransactions()">
+              <option value="all">Tất cả</option>
+              <option value="income">Thu nhập</option>
+              <option value="expense">Chi tiêu</option>
+            </select>
+          </div>
+          <div>
+            <label>Thời gian</label>
+            <select id="filterDateRange" onchange="handleDateRangeChange()">
+              <option value="all">Tất cả thời gian</option>
+              <option value="today">Hôm nay</option>
+              <option value="thisMonth">Tháng này</option>
+              <option value="custom">Tùy chọn ngày</option>
+            </select>
+          </div>
+          <div>
+            <label>Sắp xếp</label>
+            <select id="sortOrder" onchange="renderTransactions()">
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="high">Số tiền: Cao → Thấp</option>
+              <option value="low">Số tiền: Thấp → Cao</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="customDateContainer" class="grid hidden" style="margin-top:14px">
+          <div>
+            <label>Từ ngày</label>
+            <input type="date" id="startDate" onchange="renderTransactions()">
+          </div>
+          <div>
+            <label>Đến ngày</label>
+            <input type="date" id="endDate" onchange="renderTransactions()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <h3>📋 Danh Sách Giao Dịch</h3>
+            <p class="small" id="transactionCount">0 giao dịch</p>
+          </div>
+          <button class="gray" onclick="exportCSV()">📥 Xuất File CSV</button>
+        </div>
+        <div id="transactionList"></div>
+      </div>
     </div>
 
-    <!-- TRANSACTIONS LIST -->
-    <div class="card">
-      <div class="row">
-        <div>
-          <h3>📋 Lịch sử Giao dịch</h3>
-          <p class="small" id="transactionCount">0 giao dịch</p>
-        </div>
-        <button class="gray" onclick="exportCSV()">📥 Xuất CSV</button>
+    <!-- TAB 5: PHÂN TÍCH -->
+    <div id="analyticsSection" class="view-section">
+      <div class="card">
+        <h3>📊 Phân Tích Cơ Cấu Chi Tiêu</h3>
+        <p class="small">Tỷ lệ chi tiêu chi tiết theo từng danh mục</p>
+        <div id="categoryBreakdown" style="margin-top:15px"></div>
       </div>
-      <div id="transactionList"></div>
     </div>
 
   </div>
@@ -513,9 +644,28 @@ let currentUser = null;
 let transactions = [];
 let unsubscribe = null;
 let userGoalData = { name: '', target: 0 };
-let currentBudget = 0; // Lưu giá trị ngân sách
+let currentBudget = 0;
 
-/* HELPER UTILS */
+/* SIDEBAR TOGGLE & TAB SWITCHING */
+window.toggleSidebar = () => {
+  document.getElementById("sidebar").classList.toggle("active");
+  document.getElementById("sidebarOverlay").classList.toggle("active");
+};
+
+window.switchTab = (tabId) => {
+  document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+  document.querySelectorAll(".sidebar-item").forEach(item => item.classList.remove("active"));
+  
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add("active");
+  
+  const activeItem = Array.from(document.querySelectorAll(".sidebar-item")).find(el => el.getAttribute("onclick").includes(tabId));
+  if (activeItem) activeItem.classList.add("active");
+
+  toggleSidebar();
+};
+
+/* UTILITY FUNCTIONS */
 function money(n) {
   return new Intl.NumberFormat("vi-VN").format(Number(n || 0)) + " đ";
 }
@@ -543,7 +693,6 @@ function formatMoneyInput(val) {
   return n ? new Intl.NumberFormat("vi-VN").format(n) : "";
 }
 
-/* INPUT FORMATTERS */
 ["amount", "budget", "goalTarget", "editAmount"].forEach(id => {
   const el = document.getElementById(id);
   if (el) {
@@ -563,7 +712,7 @@ function toast(msg) {
   setTimeout(() => el.remove(), 2500);
 }
 
-/* AUTH & PIN MANAGEMENT */
+/* AUTHENTICATION & PIN */
 async function hashPin(pin) {
   const data = new TextEncoder().encode(pin);
   const hash = await crypto.subtle.digest("SHA-256", data);
@@ -573,19 +722,19 @@ async function hashPin(pin) {
 async function createPin() {
   let pin = prompt("Tạo mã PIN 6 số:");
   if (!pin) return false;
-  if (!/^\d{6}$/.test(pin)) { alert("PIN phải đúng 6 số."); return createPin(); }
+  if (!/^\d{6}$/.test(pin)) { alert("PIN phải đúng 6 chữ số."); return createPin(); }
   let again = prompt("Nhập lại mã PIN:");
-  if (pin !== again) { alert("PIN không khớp."); return createPin(); }
+  if (pin !== again) { alert("Mã PIN không khớp."); return createPin(); }
   localStorage.setItem("megumi_pin_" + currentUser.uid, await hashPin(pin));
   return true;
 }
 
 window.unlockPin = async function() {
   const pin = document.getElementById("pinInput").value;
-  if (!/^\d{6}$/.test(pin)) { document.getElementById("pinError").textContent = "Nhập đủ 6 số."; return; }
+  if (!/^\d{6}$/.test(pin)) { document.getElementById("pinError").textContent = "Vui lòng nhập đủ 6 số."; return; }
   const hash = await hashPin(pin);
   if (hash !== localStorage.getItem("megumi_pin_" + currentUser.uid)) {
-    document.getElementById("pinError").textContent = "PIN không đúng.";
+    document.getElementById("pinError").textContent = "Mã PIN không chính xác.";
     return;
   }
   document.getElementById("pinInput").value = "";
@@ -595,14 +744,14 @@ window.unlockPin = async function() {
 };
 
 window.changePin = async function() {
-  const old = prompt("PIN hiện tại:");
+  const old = prompt("Nhập PIN hiện tại:");
   if (!old || (await hashPin(old)) !== localStorage.getItem("megumi_pin_" + currentUser.uid)) {
-    alert("PIN hiện tại không chính xác."); return;
+    alert("Mã PIN hiện tại không chính xác."); return;
   }
-  const newPin = prompt("PIN mới (6 số):");
-  if (!/^\d{6}$/.test(newPin)) { alert("PIN mới phải đúng 6 số."); return; }
+  const newPin = prompt("Nhập PIN mới (6 số):");
+  if (!/^\d{6}$/.test(newPin)) { alert("Mã PIN mới phải đúng 6 số."); return; }
   localStorage.setItem("megumi_pin_" + currentUser.uid, await hashPin(newPin));
-  toast("🔐 Đổi PIN thành công!");
+  toast("🔐 Đã đổi mã PIN mới!");
 };
 
 window.loginGoogle = async () => { try { await signInWithPopup(auth, provider); } catch(e) { alert(e.message); } };
@@ -616,19 +765,19 @@ window.loginEmail = async () => {
 window.registerEmail = async () => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  if (!email || password.length < 6) return alert("Mật khẩu phải từ 6 ký tự.");
+  if (!email || password.length < 6) return alert("Mật khẩu phải từ 6 ký tự trở lên.");
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(res.user, { displayName: email.split("@")[0] });
     await setDoc(doc(db, "users", res.user.uid), { email, name: email.split("@")[0], budget: 0 }, { merge: true });
-    toast("🎉 Tạo tài khoản thành công!");
+    toast("🎉 Đăng ký thành công!");
   } catch(e) { alert(e.message); }
 };
 
 window.resetPassword = async () => {
   const email = document.getElementById("email").value.trim();
   if (!email) return alert("Hãy nhập Email trước.");
-  try { await sendPasswordResetEmail(auth, email); toast("📧 Đã gửi Email khôi phục."); } catch(e) { alert(e.message); }
+  try { await sendPasswordResetEmail(auth, email); toast("📧 Đã gửi email hướng dẫn khôi phục."); } catch(e) { alert(e.message); }
 };
 
 onAuthStateChanged(auth, async user => {
@@ -653,7 +802,7 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
-/* LOAD FIRESTORE DATA */
+/* DỮ LIỆU FIRESTORE */
 async function loadData() {
   if (!currentUser) return;
   try {
@@ -683,7 +832,7 @@ function listenTransactions() {
   });
 }
 
-/* TRANSACTION ACTIONS */
+/* THÊM / XÓA GIAO DỊCH */
 window.addTransaction = async () => {
   const type = document.getElementById("type").value;
   const amount = parseMoney(document.getElementById("amount").value);
@@ -707,14 +856,14 @@ window.quickAmount = (amt) => {
 };
 
 window.deleteTransaction = async (id) => {
-  if (!confirm("Bạn có chắc muốn xóa giao dịch này không?")) return;
+  if (!confirm("Bạn có chắc chắn muốn xóa giao dịch này không?")) return;
   try {
     await deleteDoc(doc(db, "users", currentUser.uid, "transactions", id));
-    toast("🗑️ Đã xóa giao dịch");
+    toast("🗑️ Đã xóa giao dịch thành công");
   } catch(e) { alert(e.message); }
 };
 
-/* MODAL EDITING */
+/* SỬA GIAO DỊCH */
 window.openEditModal = (id) => {
   const t = transactions.find(item => item.id === id);
   if (!t) return;
@@ -737,18 +886,18 @@ window.saveEditedTransaction = async () => {
   const category = document.getElementById("editCategory").value;
   const note = document.getElementById("editNote").value.trim();
 
-  if (!amount) return alert("Số tiền không hợp lệ");
+  if (!amount) return alert("Số tiền không hợp lệ.");
 
   try {
     await updateDoc(doc(db, "users", currentUser.uid, "transactions", id), {
       type, amount, category, note
     });
     closeEditModal();
-    toast("✏️ Đã cập nhật giao dịch!");
+    toast("✏️ Cập nhật giao dịch thành công!");
   } catch(e) { alert(e.message); }
 };
 
-/* FILTERING & DATE RANGE */
+/* LỌC VÀ HIỂN THỊ DỮ LIỆU */
 window.handleDateRangeChange = () => {
   const val = document.getElementById("filterDateRange").value;
   const customBox = document.getElementById("customDateContainer");
@@ -797,13 +946,13 @@ window.renderTransactions = () => {
   document.getElementById("transactionCount").textContent = `${filtered.length} giao dịch`;
 
   if (!filtered.length) {
-    list.innerHTML = `<div class="empty"><div style="font-size:40px">📭</div><p>Không tìm thấy giao dịch nào</p></div>`;
+    list.innerHTML = `<div class="empty"><div style="font-size:40px">📭</div><p>Không có giao dịch nào</p></div>`;
     return;
   }
 
   list.innerHTML = filtered.map(t => `
     <div class="transaction">
-      <div class="transaction-left">
+      <div style="display:flex; align-items:center; gap:12px;">
         <div class="category-icon">${categoryIcon(t.category)}</div>
         <div>
           <b>${escapeHTML(t.category)}</b>
@@ -834,7 +983,7 @@ function categoryIcon(cat) {
   return "📦";
 }
 
-/* STATS & VISUAL BREAKDOWN (TÍNH TỔNG SỐ DƯ BAO GỒM NGÂN SÁCH) */
+/* TÍNH TOÁN TỔNG SỐ DƯ = NGÂN SÁCH + THU NHẬP - CHI TIÊU */
 function updateStats() {
   let income = 0, expense = 0, savingsTotal = 0;
   let categoryMap = {};
@@ -850,7 +999,7 @@ function updateStats() {
     }
   });
 
-  // LOGIC MỚI: SỐ DƯ = NGÂN SÁCH + TỔNG THU NHẬP - TỔNG CHI TIÊU
+  // CÔNG THỨC: SỐ DƯ = NGÂN SÁCH BAN ĐẦU + THU NHẬP - CHI TIÊU
   const finalBalance = currentBudget + income - expense;
 
   document.getElementById("income").textContent = money(income);
@@ -862,21 +1011,22 @@ function updateStats() {
   renderCategoryBreakdown(categoryMap, expense);
 }
 
-/* BUDGET UPDATE */
+/* LƯU NGÂN SÁCH */
 window.saveBudget = async () => {
   const budgetVal = parseMoney(document.getElementById("budget").value);
   try {
     await setDoc(doc(db, "users", currentUser.uid), { budget: budgetVal }, { merge: true });
     currentBudget = budgetVal;
-    toast("💾 Đã cập nhật Ngân sách và cộng vào Số dư!");
+    toast("💾 Cập nhật Ngân sách và cộng trực tiếp vào Số dư!");
     updateStats();
   } catch(e) { alert(e.message); }
 };
 
 function updateBudgetText(expense) {
   if (!currentBudget) {
-    document.getElementById("budgetText").textContent = "Chưa đặt ngân sách";
+    document.getElementById("budgetText").textContent = "Chưa thiết lập ngân sách";
     document.getElementById("budgetPercent").textContent = "0%";
+    document.getElementById("budgetUsed").textContent = "0% chi dùng";
     document.getElementById("budgetProgress").style.width = "0%";
     return;
   }
@@ -885,17 +1035,17 @@ function updateBudgetText(expense) {
   document.getElementById("budgetPercent").textContent = p + "%";
   document.getElementById("budgetUsed").textContent = p + "% chi dùng";
   document.getElementById("budgetProgress").style.width = Math.min(p, 100) + "%";
-  document.getElementById("budgetText").textContent = remain >= 0 ? `Ngân sách còn lại: ${money(remain)}` : `Đã chi vượt Ngân sách: ${money(Math.abs(remain))}`;
+  document.getElementById("budgetText").textContent = remain >= 0 ? `Ngân sách còn lại: ${money(remain)}` : `Vượt ngân sách: ${money(Math.abs(remain))}`;
 }
 
-/* SAVINGS GOAL UPDATE */
+/* LƯU MỤC TIÊU TIẾT KIỆM */
 window.saveGoal = async () => {
   const goalName = document.getElementById("goalName").value.trim();
   const goalTarget = parseMoney(document.getElementById("goalTarget").value);
   try {
     await setDoc(doc(db, "users", currentUser.uid), { goalName, goalTarget }, { merge: true });
     userGoalData = { name: goalName, target: goalTarget };
-    toast("🎯 Đã cập nhật mục tiêu Tiết kiệm!");
+    toast("🎯 Cập nhật mục tiêu tiết kiệm thành công!");
     updateStats();
   } catch(e) { alert(e.message); }
 };
@@ -903,7 +1053,7 @@ window.saveGoal = async () => {
 function updateGoalProgress(currentSavings) {
   const target = userGoalData.target || 0;
   if (!target) {
-    document.getElementById("goalText").textContent = "Chưa thiết lập mục tiêu.";
+    document.getElementById("goalText").textContent = "Chưa đặt mục tiêu.";
     document.getElementById("goalRemain").textContent = "";
     document.getElementById("savingGoalPercent").textContent = "0%";
     document.getElementById("goalProgress").style.width = "0%";
@@ -919,7 +1069,7 @@ function updateGoalProgress(currentSavings) {
 function renderCategoryBreakdown(map, totalExpense) {
   const container = document.getElementById("categoryBreakdown");
   if (!totalExpense || Object.keys(map).length === 0) {
-    container.innerHTML = `<p class="small">Chưa có thông tin chi tiêu để thống kê.</p>`;
+    container.innerHTML = `<p class="small center">Chưa có dữ liệu chi tiêu để thống kê.</p>`;
     return;
   }
 
@@ -940,10 +1090,10 @@ function renderCategoryBreakdown(map, totalExpense) {
   }).join("");
 }
 
-/* EXPORT CSV */
+/* XUẤT CSV */
 window.exportCSV = () => {
   if (!transactions.length) return alert("Không có dữ liệu để xuất.");
-  let csv = "Loại,Danh mục,Số tiền,Ghi chú,Thời gian\n";
+  let csv = "Loai,Danh muc,So tien,Ghi chu,Thoi gian\n";
   transactions.forEach(t => {
     csv += `"${t.type}","${t.category}","${t.amount}","${(t.note||'').replaceAll('"','""')}","${new Date(t.createdAt).toLocaleString('vi-VN')}"\n`;
   });
@@ -952,10 +1102,10 @@ window.exportCSV = () => {
   a.href = URL.createObjectURL(blob);
   a.download = "Megumi-Chi-Tieu.csv";
   a.click();
-  toast("📥 Đã xuất tệp CSV!");
+  toast("📥 Đã tải file CSV!");
 };
 
-/* DARK MODE & LOGOUT */
+/* CHẾ ĐỘ TỐI & ĐĂNG XUẤT */
 window.toggleDark = () => {
   document.body.classList.toggle("dark");
   const isDark = document.body.classList.contains("dark");
@@ -969,7 +1119,7 @@ if (localStorage.getItem("megumi_dark") === "1") {
 }
 
 window.logout = async () => {
-  if (confirm("Xác nhận đăng xuất khỏi hệ thống?")) {
+  if (confirm("Bạn có chắc muốn đăng xuất?")) {
     if (unsubscribe) unsubscribe();
     await signOut(auth);
   }
