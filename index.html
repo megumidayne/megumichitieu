@@ -296,16 +296,13 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
   </div>
   <ul class="sidebar-menu">
     <li class="sidebar-item active" onclick="switchTab('dashboard')">
-      <span>📊</span> Tổng quan & Thu chi
+      <span>📊</span> Trang chủ & Thu chi
     </li>
     <li class="sidebar-item" onclick="switchTab('budgetSection')">
       <span>💰</span> Ngân sách khả dụng
     </li>
     <li class="sidebar-item" onclick="switchTab('savingSection')">
       <span>🎯</span> Mục tiêu tiết kiệm
-    </li>
-    <li class="sidebar-item" onclick="switchTab('historySection')">
-      <span>📋</span> Lịch sử & Tìm kiếm
     </li>
     <li class="sidebar-item" onclick="switchTab('analyticsSection')">
       <span>📈</span> Phân tích danh mục
@@ -411,7 +408,7 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
       </div>
     </div>
 
-    <!-- OVERVIEW STATS (LUÔN HIỂN THỊ) -->
+    <!-- OVERVIEW STATS (LUÔN HIỂN THỊ TRÊN CÙNG) -->
     <div class="stats">
       <div class="stat">
         <span class="small">💳 Số dư (Đã cộng Ngân sách)</span>
@@ -427,7 +424,7 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
       </div>
     </div>
 
-    <!-- TAB 1: DASHBOARD & THÊM MỚI -->
+    <!-- TAB 1: TRANG CHỦ & LỊCH SỬ THU CHI -->
     <div id="dashboard" class="view-section active">
       <!-- QUAN NHAU CHỌN TIỀN -->
       <div class="card">
@@ -477,6 +474,66 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
         </div>
         <br>
         <button class="primary" onclick="addTransaction()" style="width:100%">➕ Lưu Giao Dịch</button>
+      </div>
+
+      <!-- BỘ LỌC TÌM KIẾM TRỰC TIẾP TẠI TRANG CHỦ -->
+      <div class="card">
+        <h3>🔎 Tìm kiếm & Lọc giao dịch</h3>
+        <div class="grid-4">
+          <div>
+            <label>Từ khóa</label>
+            <input id="search" placeholder="Ghi chú, danh mục..." oninput="renderTransactions()">
+          </div>
+          <div>
+            <label>Loại thu/chi</label>
+            <select id="filterType" onchange="renderTransactions()">
+              <option value="all">Tất cả</option>
+              <option value="income">Thu nhập</option>
+              <option value="expense">Chi tiêu</option>
+            </select>
+          </div>
+          <div>
+            <label>Thời gian</label>
+            <select id="filterDateRange" onchange="handleDateRangeChange()">
+              <option value="all">Tất cả thời gian</option>
+              <option value="today">Hôm nay</option>
+              <option value="thisMonth">Tháng này</option>
+              <option value="custom">Tùy chọn ngày</option>
+            </select>
+          </div>
+          <div>
+            <label>Sắp xếp</label>
+            <select id="sortOrder" onchange="renderTransactions()">
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="high">Số tiền: Cao → Thấp</option>
+              <option value="low">Số tiền: Thấp → Cao</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="customDateContainer" class="grid hidden" style="margin-top:14px">
+          <div>
+            <label>Từ ngày</label>
+            <input type="date" id="startDate" onchange="renderTransactions()">
+          </div>
+          <div>
+            <label>Đến ngày</label>
+            <input type="date" id="endDate" onchange="renderTransactions()">
+          </div>
+        </div>
+      </div>
+
+      <!-- ĐƯỢC THÊM VÀO TRANG ĐẦU: LỊCH SỬ THU CHI -->
+      <div class="card">
+        <div class="row">
+          <div>
+            <h3>📋 Lịch Sử Thu Chi</h3>
+            <p class="small" id="transactionCount">0 giao dịch</p>
+          </div>
+          <button class="gray" onclick="exportCSV()">📥 Xuất File CSV</button>
+        </div>
+        <div id="transactionList"></div>
       </div>
     </div>
 
@@ -541,68 +598,7 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
       </div>
     </div>
 
-    <!-- TAB 4: LỊCH SỬ & TÌM KIẾM -->
-    <div id="historySection" class="view-section">
-      <div class="card">
-        <h3>🔎 Tìm kiếm & Lọc giao dịch</h3>
-        <div class="grid-4">
-          <div>
-            <label>Từ khóa</label>
-            <input id="search" placeholder="Ghi chú, danh mục..." oninput="renderTransactions()">
-          </div>
-          <div>
-            <label>Loại thu/chi</label>
-            <select id="filterType" onchange="renderTransactions()">
-              <option value="all">Tất cả</option>
-              <option value="income">Thu nhập</option>
-              <option value="expense">Chi tiêu</option>
-            </select>
-          </div>
-          <div>
-            <label>Thời gian</label>
-            <select id="filterDateRange" onchange="handleDateRangeChange()">
-              <option value="all">Tất cả thời gian</option>
-              <option value="today">Hôm nay</option>
-              <option value="thisMonth">Tháng này</option>
-              <option value="custom">Tùy chọn ngày</option>
-            </select>
-          </div>
-          <div>
-            <label>Sắp xếp</label>
-            <select id="sortOrder" onchange="renderTransactions()">
-              <option value="newest">Mới nhất</option>
-              <option value="oldest">Cũ nhất</option>
-              <option value="high">Số tiền: Cao → Thấp</option>
-              <option value="low">Số tiền: Thấp → Cao</option>
-            </select>
-          </div>
-        </div>
-
-        <div id="customDateContainer" class="grid hidden" style="margin-top:14px">
-          <div>
-            <label>Từ ngày</label>
-            <input type="date" id="startDate" onchange="renderTransactions()">
-          </div>
-          <div>
-            <label>Đến ngày</label>
-            <input type="date" id="endDate" onchange="renderTransactions()">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="row">
-          <div>
-            <h3>📋 Danh Sách Giao Dịch</h3>
-            <p class="small" id="transactionCount">0 giao dịch</p>
-          </div>
-          <button class="gray" onclick="exportCSV()">📥 Xuất File CSV</button>
-        </div>
-        <div id="transactionList"></div>
-      </div>
-    </div>
-
-    <!-- TAB 5: PHÂN TÍCH -->
+    <!-- TAB 4: PHÂN TÍCH -->
     <div id="analyticsSection" class="view-section">
       <div class="card">
         <h3>📊 Phân Tích Cơ Cấu Chi Tiêu</h3>
@@ -897,7 +893,7 @@ window.saveEditedTransaction = async () => {
   } catch(e) { alert(e.message); }
 };
 
-/* LỌC VÀ HIỂN THỊ DỮ LIỆU */
+/* LỌC VÀ HIỂN THỊ DỮ LIỆU THU CHI */
 window.handleDateRangeChange = () => {
   const val = document.getElementById("filterDateRange").value;
   const customBox = document.getElementById("customDateContainer");
