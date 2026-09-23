@@ -288,7 +288,7 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
     <div class="stats">
       <div class="stat">
         <div class="icon">💳</div>
-        <span class="small">Số dư tổng thể</span>
+        <span class="small">Số dư hiện tại (Gồm Ngân sách)</span>
         <b id="balance">0 đ</b>
       </div>
       <div class="stat">
@@ -303,7 +303,7 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
       </div>
     </div>
 
-    <!-- TÍNH NĂNG MỚI: MỤC TIÊU TIẾT KIỆM -->
+    <!-- MỤC TIÊU TIẾT KIỆM -->
     <div class="card">
       <div class="row">
         <div>
@@ -319,7 +319,6 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
         </div>
         <div>
           <label>Mục tiêu số tiền</label>
-
           <input id="goalTarget" type="text" inputmode="decimal" placeholder="10.000.000">
         </div>
       </div>
@@ -340,18 +339,18 @@ label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
     <div class="card">
       <div class="row">
         <div>
-          <h3>💰 Ngân sách tháng</h3>
-          <p class="small">Hạn mức chi tiêu mong muốn</p>
+          <h3>💰 Ngân sách khả dụng</h3>
+          <p class="small">Số tiền ngân sách được cộng trực tiếp vào Số dư</p>
         </div>
         <span class="badge" id="budgetPercent">0%</span>
       </div>
       <div class="grid">
         <div>
-          <label>Ngân sách giới hạn</label>
+          <label>Ngân sách ban đầu</label>
           <input id="budget" type="text" inputmode="decimal" placeholder="5.000.000">
         </div>
         <div style="display:flex; align-items:flex-end">
-          <button class="primary" onclick="saveBudget()" style="width:100%">💾 Lưu ngân sách</button>
+          <button class="primary" onclick="saveBudget()" style="width:100%">💾 Cập nhật Ngân sách</button>
         </div>
       </div>
       <div class="progress">
@@ -514,6 +513,7 @@ let currentUser = null;
 let transactions = [];
 let unsubscribe = null;
 let userGoalData = { name: '', target: 0 };
+let currentBudget = 0; // Lưu giá trị ngân sách
 
 /* HELPER UTILS */
 function money(n) {
@@ -660,7 +660,9 @@ async function loadData() {
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if (snap.exists()) {
       const data = snap.data();
-      document.getElementById("budget").value = data.budget ? new Intl.NumberFormat("vi-VN").format(data.budget) : "";
+      currentBudget = data.budget || 0;
+      document.getElementById("budget").value = currentBudget ? new Intl.NumberFormat("vi-VN").format(currentBudget) : "";
+      
       if (data.goalName) document.getElementById("goalName").value = data.goalName;
       if (data.goalTarget) {
         document.getElementById("goalTarget").value = new Intl.NumberFormat("vi-VN").format(data.goalTarget);
@@ -766,7 +768,6 @@ window.renderTransactions = () => {
     const textMatch = ((t.category || "") + " " + (t.note || "")).toLowerCase().includes(search);
     const typeMatch = filterType === "all" || t.type === filterType;
     
-    // Date filter logic
     let dateMatch = true;
     const tDate = new Date(t.createdAt);
     const now = new Date();
@@ -788,7 +789,6 @@ window.renderTransactions = () => {
     return textMatch && typeMatch && dateMatch;
   });
 
-  /* SORTING */
   if (sort === "newest") filtered.sort((a,b) => b.createdAt - a.createdAt);
   if (sort === "oldest") filtered.sort((a,b) => a.createdAt - b.createdAt);
   if (sort === "high") filtered.sort((a,b) => b.amount - a.amount);
@@ -834,7 +834,7 @@ function categoryIcon(cat) {
   return "📦";
 }
 
-/* STATS & VISUAL BREAKDOWN */
+/* STATS & VISUAL BREAKDOWN (TÍNH TỔNG SỐ DƯ BAO GỒM NGÂN SÁCH) */
 function updateStats() {
   let income = 0, expense = 0, savingsTotal = 0;
   let categoryMap = {};
@@ -850,9 +850,12 @@ function updateStats() {
     }
   });
 
+  // LOGIC MỚI: SỐ DƯ = NGÂN SÁCH + TỔNG THU NHẬP - TỔNG CHI TIÊU
+  const finalBalance = currentBudget + income - expense;
+
   document.getElementById("income").textContent = money(income);
   document.getElementById("expense").textContent = money(expense);
-  document.getElementById("balance").textContent = money(income - expense);
+  document.getElementById("balance").textContent = money(finalBalance);
 
   updateBudgetText(expense);
   updateGoalProgress(savingsTotal);
@@ -861,28 +864,28 @@ function updateStats() {
 
 /* BUDGET UPDATE */
 window.saveBudget = async () => {
-  const budget = parseMoney(document.getElementById("budget").value);
+  const budgetVal = parseMoney(document.getElementById("budget").value);
   try {
-    await setDoc(doc(db, "users", currentUser.uid), { budget }, { merge: true });
-    toast("💾 Đã lưu hạn mức Ngân Sách");
+    await setDoc(doc(db, "users", currentUser.uid), { budget: budgetVal }, { merge: true });
+    currentBudget = budgetVal;
+    toast("💾 Đã cập nhật Ngân sách và cộng vào Số dư!");
     updateStats();
   } catch(e) { alert(e.message); }
 };
 
 function updateBudgetText(expense) {
-  const budget = parseMoney(document.getElementById("budget").value);
-  if (!budget) {
+  if (!currentBudget) {
     document.getElementById("budgetText").textContent = "Chưa đặt ngân sách";
     document.getElementById("budgetPercent").textContent = "0%";
     document.getElementById("budgetProgress").style.width = "0%";
     return;
   }
-  const remain = budget - expense;
-  let p = Math.round((expense / budget) * 100);
+  const remain = currentBudget - expense;
+  let p = Math.round((expense / currentBudget) * 100);
   document.getElementById("budgetPercent").textContent = p + "%";
-  document.getElementById("budgetUsed").textContent = p + "%";
+  document.getElementById("budgetUsed").textContent = p + "% chi dùng";
   document.getElementById("budgetProgress").style.width = Math.min(p, 100) + "%";
-  document.getElementById("budgetText").textContent = remain >= 0 ? `Còn lại: ${money(remain)}` : `Vượt hạn mức: ${money(Math.abs(remain))}`;
+  document.getElementById("budgetText").textContent = remain >= 0 ? `Ngân sách còn lại: ${money(remain)}` : `Đã chi vượt Ngân sách: ${money(Math.abs(remain))}`;
 }
 
 /* SAVINGS GOAL UPDATE */
@@ -902,7 +905,7 @@ function updateGoalProgress(currentSavings) {
   if (!target) {
     document.getElementById("goalText").textContent = "Chưa thiết lập mục tiêu.";
     document.getElementById("goalRemain").textContent = "";
-    document.getElementById("goalGoalPercent") ? document.getElementById("goalGoalPercent").textContent = "0%" : null;
+    document.getElementById("savingGoalPercent").textContent = "0%";
     document.getElementById("goalProgress").style.width = "0%";
     return;
   }
